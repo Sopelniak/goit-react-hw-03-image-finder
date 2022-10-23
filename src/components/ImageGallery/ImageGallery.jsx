@@ -1,12 +1,22 @@
 import { Component } from 'react';
 import PropTypes from 'prop-types';
+import { ImageGalleryItem } from './ImageGalleryItem/ImageGalleryItem';
 import './ImageGallery.scss';
 
 class ImageGallery extends Component {
   render() {
     return (
       <ul className="ImageGallery">
-        {/* <!-- Набір <li> із зображеннями --> */}
+        {this.props.imgs.map(img => {
+          return (
+            <ImageGalleryItem
+              key={img.id}
+              id={img.id}
+              webformatURL={img.webformatURL}
+              largeImageURL={img.largeImageURL}
+            />
+          );
+        })}
       </ul>
     );
   }
@@ -15,5 +25,5 @@ class ImageGallery extends Component {
 export { ImageGallery };
 
 ImageGallery.propTypes = {
-  //   prop: PropTypes,
+  imgs: PropTypes.array.isRequired,
 };

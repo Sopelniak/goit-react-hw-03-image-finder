@@ -4,9 +4,10 @@ import './ImageGalleryItem.scss';
 
 class ImageGalleryItem extends Component {
   render() {
+    const { id, webformatURL } = this.props;
     return (
       <li className="ImageGalleryItem">
-        <img className="ImageGalleryItem-image" src="" alt="" />
+        <img className="ImageGalleryItem-image" src={webformatURL} alt={id} />
       </li>
     );
   }
@@ -15,5 +16,6 @@ class ImageGalleryItem extends Component {
 export { ImageGalleryItem };
 
 ImageGalleryItem.propTypes = {
-  //   prop: PropTypes,
+  id: PropTypes.number.isRequired,
+  webformatURL: PropTypes.string.isRequired,
 };
