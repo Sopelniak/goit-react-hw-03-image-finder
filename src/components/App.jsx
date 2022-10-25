@@ -15,12 +15,19 @@ class App extends Component {
     page: 1,
   };
 
-  fetchImgs = async () => {
+  onSubmit = e => {
+    const { page } = this.state;
+    const { value } = e.target.elements.search;
+    e.preventDefault();
+    this.fetchImgs(value, page);
+  };
+
+  fetchImgs = async (searchValue = 'cat', page) => {
     try {
       // Встановлюємо індикатор завантаження та обнуляємо помилку, якщо була
       this.setState({ isLoading: true, error: '' });
 
-      const imgsData = await imgsRequest();
+      const imgsData = await imgsRequest(searchValue, page);
 
       this.setState({ imgs: imgsData.hits });
     } catch (err) {
@@ -30,18 +37,31 @@ class App extends Component {
     }
   };
 
+  nextPage = () => {
+    this.setState(prevState => ({
+      page: prevState.page + 1,
+    }));
+  };
+
   componentDidMount() {
     this.fetchImgs();
   }
 
+  componentDidUpdate(prevState) {
+    if (prevState.page !== this.state.page) {
+      this.fetchImgs();
+    }
+  }
+
   render() {
+    const { imgs, isLoading } = this.state;
     return (
       <div className="App">
-        <Searchbar />
-        <ImageGallery imgs={this.state.imgs} />
-        <Button />
-        <Loader />
-        <Modal />
+        {isLoading && <Loader />}
+        <Searchbar onSubmit={this.onSubmit} />
+        <ImageGallery imgs={imgs} />
+        <Button onBtnClick={this.nextPage} />
+        {/* <Modal /> */}
       </div>
     );
   }

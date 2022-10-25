@@ -1,6 +1,5 @@
 import { Component } from 'react';
 import PropTypes from 'prop-types';
-
 import './Searchbar.scss';
 
 class Searchbar extends Component {
@@ -11,6 +10,7 @@ class Searchbar extends Component {
           <form className="SearchForm" onSubmit={this.props.onSubmit}>
             <input
               className="SearchForm-input"
+              name="search"
               type="text"
               autoComplete="off"
               autoFocus
@@ -29,5 +29,5 @@ class Searchbar extends Component {
 export { Searchbar };
 
 Searchbar.propTypes = {
-  //   prop: PropTypes,
+  onSubmit: PropTypes.func.isRequired,
 };
