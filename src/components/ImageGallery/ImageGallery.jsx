@@ -6,7 +6,11 @@ import './ImageGallery.scss';
 class ImageGallery extends Component {
   render() {
     return (
-      <ul className="ImageGallery">
+      <ul
+        onClick={this.props.onClickItem}
+        id="ImageGallery"
+        className="ImageGallery"
+      >
         {this.props.imgs.map(img => {
           return (
             <ImageGalleryItem
