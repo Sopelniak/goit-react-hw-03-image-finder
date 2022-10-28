@@ -35,7 +35,7 @@ class App extends Component {
     });
   };
 
-  onClickModal = () => {
+  onCloseModal = () => {
     this.setState({ modal: { isModalOpen: false, imgToModal: null } });
   };
 
@@ -110,7 +110,7 @@ class App extends Component {
         {modal.isModalOpen && (
           <Modal
             imgToModal={modal.imgToModal}
-            onClickModal={this.onClickModal}
+            onCloseModal={this.onCloseModal}
           />
         )}
       </div>

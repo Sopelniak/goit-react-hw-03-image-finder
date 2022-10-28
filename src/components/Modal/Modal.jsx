@@ -4,18 +4,30 @@ import './Modal.scss';
 
 export class Modal extends Component {
   componentDidMount() {
-    const modal = document.querySelector('.Overlay');
-    modal.addEventListener('click', this.props.onClickModal);
+    window.addEventListener('keyup', this.onKeyUp);
   }
 
   componentWillUnmount() {
-    const modal = document.querySelector('.Overlay');
-    modal.removeEventListener('click', this.props.onClickModal);
+    window.removeEventListener('keyup', this.onKeyUp);
   }
+
+  onKeyUp = e => {
+    if (e.code === 'Escape') {
+      this.props.onCloseModal();
+    }
+    return;
+  };
+
+  onClick = e => {
+    if (e.target === e.currentTarget) {
+      this.props.onCloseModal();
+    }
+  };
+
   render() {
     const { imgToModal } = this.props;
     return (
-      <div className="Overlay">
+      <div className="Overlay" onClick={this.onClick}>
         <div className="Modal">
           <img src={imgToModal.largeImageURL} alt={imgToModal.id} />
         </div>
@@ -26,5 +38,5 @@ export class Modal extends Component {
 
 Modal.propTypes = {
   imgToModal: PropTypes.object.isRequired,
-  onClickModal: PropTypes.func.isRequired,
+  onCloseModal: PropTypes.func.isRequired,
 };
