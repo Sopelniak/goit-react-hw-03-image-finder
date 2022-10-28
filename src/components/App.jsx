@@ -11,11 +11,10 @@ class App extends Component {
   state = {
     searchValue: '',
     imgs: [],
-    imgToModal: '',
-    isModalOpen: false,
     isLoading: false,
     error: '',
     page: 1,
+    modal: { imgToModal: null, isModalOpen: false },
   };
 
   onSubmit = e => {
@@ -32,13 +31,12 @@ class App extends Component {
       img => img.id === Number(e.target.id)
     );
     this.setState({
-      isModalOpen: true,
-      imgToModal: selectedImg,
+      modal: { isModalOpen: true, imgToModal: selectedImg },
     });
   };
 
   onClickModal = () => {
-    this.setState({ isModalOpen: false });
+    this.setState({ modal: { isModalOpen: false, imgToModal: null } });
   };
 
   fetchImgs = async () => {
@@ -102,16 +100,18 @@ class App extends Component {
   }
 
   render() {
-    const { searchValue, imgs, imgToModal, isModalOpen, isLoading } =
-      this.state;
+    const { searchValue, imgs, modal, isLoading } = this.state;
     return (
       <div className="App">
         {isLoading && <Loader />}
         <Searchbar onSubmit={this.onSubmit} />
         <ImageGallery imgs={imgs} onClickItem={this.onClickItem} />
         {searchValue !== '' && <Button onBtnClick={this.nextPage} />}
-        {isModalOpen && (
-          <Modal imgToModal={imgToModal} onClickModal={this.onClickModal} />
+        {modal.isModalOpen && (
+          <Modal
+            imgToModal={modal.imgToModal}
+            onClickModal={this.onClickModal}
+          />
         )}
       </div>
     );
