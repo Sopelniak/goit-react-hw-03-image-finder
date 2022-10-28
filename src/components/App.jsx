@@ -9,12 +9,48 @@ import '../index.css';
 
 class App extends Component {
   state = {
-    searchValue: '',
     imgs: [],
-    isLoading: false,
-    error: '',
     page: 1,
+    searchValue: '',
+    error: '',
+    isLoading: false,
     modal: { imgToModal: null, isModalOpen: false },
+  };
+
+  componentDidUpdate(prevProps, prevState) {
+    if (
+      prevState.searchValue !== this.state.searchValue ||
+      prevState.page !== this.state.page
+    ) {
+      this.fetchImgs();
+    }
+  }
+
+  fetchImgs = async () => {
+    const { searchValue, page } = this.state;
+
+    try {
+      this.setState({
+        isLoading: true,
+        error: '',
+      });
+
+      const imgsData = await imgsRequest(searchValue, page);
+
+      if (page === 1) {
+        this.setState({
+          imgs: imgsData.hits,
+        });
+      } else {
+        this.setState({
+          imgs: [...this.state.imgs, ...imgsData.hits],
+        });
+      }
+    } catch (err) {
+      this.setState({ error: err.message });
+    } finally {
+      this.setState({ isLoading: false });
+    }
   };
 
   onSubmit = e => {
@@ -39,74 +75,21 @@ class App extends Component {
     this.setState({ modal: { isModalOpen: false, imgToModal: null } });
   };
 
-  fetchImgs = async () => {
-    const { searchValue, page } = this.state;
-
-    try {
-      this.setState({
-        isLoading: true,
-        error: '',
-      });
-
-      const imgsData = await imgsRequest(searchValue, page);
-
-      this.setState({
-        imgs: imgsData.hits,
-      });
-    } catch (err) {
-      this.setState({ error: err.message });
-    } finally {
-      this.setState({ isLoading: false });
-    }
-  };
-
-  fetchImgsNextPage = async () => {
-    const { searchValue, page } = this.state;
-
-    try {
-      this.setState({
-        isLoading: true,
-        error: '',
-      });
-
-      const imgsData = await imgsRequest(searchValue, page);
-
-      this.setState({
-        imgs: [...this.state.imgs, ...imgsData.hits],
-      });
-    } catch (err) {
-      this.setState({ error: err.message });
-    } finally {
-      this.setState({ isLoading: false });
-    }
-  };
-
-  nextPage = () => {
+  onLoadMore = () => {
     this.setState(prevState => ({
       page: prevState.page + 1,
     }));
   };
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.searchValue !== this.state.searchValue) {
-      this.fetchImgs();
-    }
-    if (
-      prevState.searchValue === this.state.searchValue &&
-      prevState.page !== this.state.page
-    ) {
-      this.fetchImgsNextPage();
-    }
-  }
-
   render() {
-    const { searchValue, imgs, modal, isLoading } = this.state;
+    const { imgs, modal, isLoading } = this.state;
+    const isBtnLoadMore = imgs.length > 0;
     return (
       <div className="App">
         {isLoading && <Loader />}
         <Searchbar onSubmit={this.onSubmit} />
         <ImageGallery imgs={imgs} onClickItem={this.onClickItem} />
-        {searchValue !== '' && <Button onBtnClick={this.nextPage} />}
+        {isBtnLoadMore && <Button onBtnClick={this.onLoadMore} />}
         {modal.isModalOpen && (
           <Modal
             imgToModal={modal.imgToModal}

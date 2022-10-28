@@ -37,6 +37,9 @@ export class Modal extends Component {
 }
 
 Modal.propTypes = {
-  imgToModal: PropTypes.object.isRequired,
+  imgToModal: PropTypes.shape({
+    largeImageURL: PropTypes.string.isRequired,
+    id: PropTypes.number.isRequired,
+  }),
   onCloseModal: PropTypes.func.isRequired,
 };
